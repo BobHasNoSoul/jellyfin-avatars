@@ -11,9 +11,8 @@ this guide was thrown together as a more in depth way of getting avatars on jell
 # installation
 go to your web root (usually /usr/share/jellyfin/web) now run these commands
 
-    sudo wget https://raw.githubusercontent.com/BobHasNoSoul/jellyfin-avatars/avatars.zip
-    sudo unzip avatars.zip
-    sudo wget https://raw.githubusercontent.com/BobHasNoSoul/jellyfin-avatars/avatars.html
+    sudo wget https://github.com/BobHasNoSoul/jellyfin-avatars/archive/refs/heads/main.zip
+    sudo unzip main.zip
 
 and now we need to edit the profile tab to enable the button :D 
 
@@ -25,7 +24,7 @@ now replace the following string:
 
 with the following:
 
-    <span>${DeleteImage}</span> </button> <button is="emby-buttoon" type="button" class="raised" id="btnMoreImages">><STYLE>A {text-decoration: none; color: #def3fb} </STYLE><span>${<a href="avatars.html" target="_blank">More Images</a>}</span></button>
+    <span>${DeleteImage}</span> </button> <button is="emby-buttoon" type="button" class="raised" id="btnMoreImages">><STYLE>A {text-decoration: none; color: #def3fb} </STYLE><span>${<a href="jellyfin-avatars-main/avatars.html" target="_blank">More Images</a>}</span></button>
 
 now you can just simply save this file and clear cache and reload in your client browser / app
 
