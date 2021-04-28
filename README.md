@@ -24,7 +24,7 @@ now replace the following string:
 
 with the following:
 
-    <span>${DeleteImage}</span> </button> <button is="emby-buttoon" type="button" class="raised" id="btnMoreImages">><STYLE>A {text-decoration: none; color: #def3fb} </STYLE><span>${<a href="jellyfin-avatars-main/avatars.html" target="_blank">More Images</a>}</span></button>
+    <span>${DeleteImage}</span> </button> <button is="emby-buttoon" type="button" class="raised" id="btnMoreImages">><STYLE>A {text-decoration: none; color: #def3fb} </STYLE><span>${<a href="/web/jellyfin-avatars-main/avatars.html" target="_blank">More Images</a>}</span></button>
 
 now you can just simply save this file and clear cache and reload in your client browser / app
 
