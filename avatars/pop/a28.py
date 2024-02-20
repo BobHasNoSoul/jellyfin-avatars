@@ -5,7 +5,7 @@ import urllib.parse
 image_directory = "./"  # Replace with the actual path to your image directory
 
 # Read the existing HTML file
-with open("./popculture.html", "r") as file:
+with open("popculture.html", "r") as file:
     html_content = file.read()
 
 # Generate HTML for new image links
@@ -25,6 +25,6 @@ insert_location = "<!-- INSERT_NEW_IMAGES_HERE -->"
 html_content = html_content.replace(insert_location, new_image_html + insert_location)
 
 # Write the updated HTML back to the file
-with open("./index.html", "w") as file:
+with open("index.html", "w") as file:
     file.write(html_content)
 
