@@ -1,5 +1,5 @@
 # jellyfin-avatars
-adds a html page and a button to jellyfin 10.8.x for users to get more avatars
+adds a html page and a button to jellyfin 10.9.x for users to get more avatars
 
 this guide was thrown together as a more in depth way of getting avatars on jellyfin from my jellyfin-mods repo.. if you like this head there and maybe you will see some other things you like. 
 
@@ -23,58 +23,58 @@ this guide was thrown together as a more in depth way of getting avatars on jell
 
 ![screencapture-blueboxofdoom-uk-web-avatars-ps2-index-html-2024-02-22-17_22_02](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/c0c3f357-1aa2-4b7f-b6d5-9d7089c8b4e0)
 
-OH NO A MASSIVE UPDATE AND RECODE WAS MADE 19/2/24 
+# UPDATED 17/05/24 for 10.9.x
 
-this works on 10.8.13 and all 10.8 variants
+this works on 10.9.0 and all 10.8 variants so far
 
 however this creates a bigger avatar library covering steam, playstation, xbox one, xbox 360, netflix, PS2 and a new good pop culture animated section. and yes the link is now to /web/avatars/index.html 
 
 ---
 
 # installation
+clone the repo into your servers jellyfin webroot (if native /usr/share/jellyfin-web/)so there is a dir called avatars in the webroot and the index.html in there if you have a folder that is not called avatars, you will need to rename it to avatars. if done correctly going to 192.168.1.XXX:8096/web/avatars/index.html (change the ip to your servers ip and maybe port if you have changed it for some reason) should be able to open the library manually.
+
 go to your web root (usually `/usr/share/jellyfin/web`) now run these commands
 
 put the avatars dir into the web root 
 
 and now we need to edit the profile tab to enable the button :D 
 
-    `sudo nano UserProfilePage.*.chunk.js`
+    `sudo nano user-userprofile.*.chunk.js`
 
 now find the following string:
 
-    `"raised btnDeleteImage hide",title:"DeleteImage"})`
+    `(0,a.jsx)(u.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"}),`
 
-now after that string you add a `,` so it becomes `"raised btnDeleteImage hide",title:"DeleteImage"}),`
-
-and hit enter to create a new line and enter again so you create a blank line 
-
-then insert the following on the blank line
-
+replace it with 
 ````
-(0, n.jsx)("a", {
-    href: "/web/avatars/index.html",
-    target: "_blank",
-    style: {
-        display: "inline-block",
-        padding: "0.9em 1em",
-        backgroundColor: "#00a4dc",
-        color: "#fff",
-        border: "0",
-        textDecoration: "none",
-        borderRadius: "0.2em",
-        boxSizing: "border-box", // Changed from box-sizing to boxSizing
-        lineHeight: "1.35",      // Changed from line-height to lineHeight
-        boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-        transition: "background-color 0.3s ease",
-        cursor: "pointer"
-    },
-    children: "More Avatars"
-})
+(0,a.jsx)(u.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"}),
+    (0,a.jsx)("a",{
+        href: "/web/avatars/index.html",
+        target: "_blank",
+        style: {
+            display: "inline-block",
+            padding: "0.9em 1em",
+            backgroundColor: "#00a4dc",
+            color: "#fff",
+            border: "0",
+            textDecoration: "none",
+            borderRadius: "0.2em",
+            boxSizing: "border-box",
+            lineHeight: "1.35",
+            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+            transition: "background-color 0.3s ease",
+            cursor: "pointer",
+            marginTop: "1em"
+        },
+        children: "More Avatars"
+    })
 ````
-so the final section is bellow the segment above and that should be 
 
-`]}))]})),(0,n.jsx)(f.Z,{userId:t})]}))}))}}}]);`
+and save clear cache and reload in your client browser / app
 
-now you can just simply save this file and clear cache and reload in your client browser / app
+all done in 10.9.x
 
-all set :D reloaded and boom done for 2024
+
+## future to-do
+include my scripts to build the avatar displays and explain usage so you can make and add your own and expand, maybe even customise things yourself to your own liking.
