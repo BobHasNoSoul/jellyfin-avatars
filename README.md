@@ -40,11 +40,11 @@ put the avatars dir into the web root
 
 and now we need to edit the profile tab to enable the button :D 
 
-    `sudo nano user-userprofile.*.chunk.js`
+    sudo nano user-userprofile.*.chunk.js
 
 now find the following string:
 
-    `(0,a.jsx)(u.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"}),`
+    (0,a.jsx)(u.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"})
 
 replace it with 
 ````
