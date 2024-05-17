@@ -32,7 +32,11 @@ however this creates a bigger avatar library covering steam, playstation, xbox o
 ---
 
 # installation
-clone the repo into your servers jellyfin webroot (if native /usr/share/jellyfin-web/)so there is a dir called avatars in the webroot and the index.html in there if you have a folder that is not called avatars, you will need to rename it to avatars. if done correctly going to 192.168.1.XXX:8096/web/avatars/index.html (change the ip to your servers ip and maybe port if you have changed it for some reason) should be able to open the library manually.
+go to your webroot and download the avatar files and fix the location to do this in a basic way do the following in the webroot for jellyfin (or do it manually if you wish but basically download the files, move the avatars folder to the webroot folder then continue to the next step to add the button.
+
+````
+sudo git clone https://github.com/BobHasNoSoul/jellyfin-avatars.git && cd jellyfin-avatars && sudo mv avatars ../ && cd .. && sudo rm -r jellyfin-avatars && echo "done"
+````
 
 go to your web root (usually `/usr/share/jellyfin/web`) now run these commands
 
