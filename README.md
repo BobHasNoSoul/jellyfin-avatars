@@ -48,11 +48,12 @@ and now we need to edit the profile tab to enable the button :D
 
 now find the following string:
 
-    (0,a.jsx)(u.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"})
+    (0,a.jsx)(g.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"})
+
 
 replace it with 
 ````
-(0,a.jsx)(u.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"}),
+(0,a.jsx)(g.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"}),
     (0,a.jsx)("a",{
         href: "/web/avatars/index.html",
         target: "_blank",
