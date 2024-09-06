@@ -1,85 +1,106 @@
 # jellyfin-avatars
-adds a html page and a button to jellyfin 10.9.x for users to get more avatars
+
+keyupdate: it no longer needs the user to download the image and manually add it, it just updates the current users image with a simple tap or click
+
+adds a html page and a button to jellyfin 10.7.x and higher for users to get more avatars
 
 this guide was thrown together as a more in depth way of getting avatars on jellyfin from my jellyfin-mods repo.. if you like this head there and maybe you will see some other things you like. 
 
-![Screenshot 2024-02-19 215300](https://github.com/BobHasNoSoul/jellyfin-avatars/assets/23018412/e641792f-f408-4834-a5b1-c77d5e9a17d4)
-
-![Screenshot 2024-02-19 215204](https://github.com/BobHasNoSoul/jellyfin-avatars/assets/23018412/339d0f5b-ca10-4a47-9fce-baf6345cf465)
-
-![screencapture-blueboxofdoom-uk-web-avatars-pop-pop-html-2024-02-22-17_15_21](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/b62a4881-634c-4c42-9a47-ffe4eb0a69a7)
-
-![screencapture-blueboxofdoom-uk-web-avatars-Steam-gallery-html-2024-02-22-17_16_00](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/703b7a00-7884-4c84-82c6-b9946ae71c11)
-
-![screencapture-blueboxofdoom-uk-web-avatars-360-360-html-2024-02-22-17_18_58](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/7c483249-2d51-4eb9-9857-08a82a9df69b)
-
-![screencapture-blueboxofdoom-uk-web-avatars-nf-nf-html-2024-02-22-17_20_00](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/49dca657-cf1b-4c67-8c9f-2ecce64985a6)
-
-![screencapture-blueboxofdoom-uk-web-avatars-one-one-html-2024-02-22-17_20_40](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/2da96360-73f8-4774-8fd5-d14f5c3c1def)
-
-![screencapture-blueboxofdoom-uk-web-avatars-playstation-playstation-html-2024-02-22-17_21_07](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/cc71e8ca-18c7-4fd0-b618-92ca2f261606)
-
-![screencapture-blueboxofdoom-uk-web-avatars-playstation-playstation-html-2024-02-22-17_21_07](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/0510732b-debc-4c70-92ee-28ac498fc052)
-
-![screencapture-blueboxofdoom-uk-web-avatars-ps2-index-html-2024-02-22-17_22_02](https://github.com/BobHasNoSoul/jellyfin-mods/assets/23018412/c0c3f357-1aa2-4b7f-b6d5-9d7089c8b4e0)
-
-# UPDATED 17/05/24 for 10.9.x
-
-this works on 10.9.0 and all 10.8 variants so far
-
-however this creates a bigger avatar library covering steam, playstation, xbox one, xbox 360, netflix, PS2 and a new good pop culture animated section. and yes the link is now to /web/avatars/index.html 
+![](https://user-images.githubusercontent.com/23018412/115957171-d65a0300-a4f8-11eb-8a8a-698e4620ea6d.PNG)
+![](https://user-images.githubusercontent.com/23018412/115976186-3eddca00-a563-11eb-8597-81341924c750.PNG)
 
 ---
 
 # installation
-go to your webroot and download the avatar files and fix the location to do this in a basic way do the following in the webroot for jellyfin (or do it manually if you wish but basically download the files, move the avatars folder to the webroot folder then continue to the next step to add the button.
+go to your web root (usually /usr/share/jellyfin/web) now run these commands
 
-````
-sudo git clone https://github.com/BobHasNoSoul/jellyfin-avatars.git && cd jellyfin-avatars && sudo mv avatars ../ && cd .. && sudo rm -r jellyfin-avatars && echo "done"
-````
-
-go to your web root (usually `/usr/share/jellyfin/web`) now run these commands
-
-put the avatars dir into the web root 
+    sudo wget https://github.com/BobHasNoSoul/jellyfin-avatars/archive/refs/heads/main.zip
+    sudo unzip main.zip
 
 and now we need to edit the profile tab to enable the button :D 
 
-    sudo nano user-userprofile.*.chunk.js
+    sudo nano user-profile-index-html.*.bundle.js
 
-now find the following string:
+now replace the following string:
 
-    (0,a.jsx)(g.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"})
+    <span>${DeleteImage}</span> </button>
 
+with the following:
 
-replace it with 
-````
-(0,a.jsx)(g.A,{type:"button",id:"btnDeleteImage",className:"raised hide",title:"DeleteImage"}),
-    (0,a.jsx)("a",{
-        href: "/web/avatars/index.html",
-        target: "_blank",
-        style: {
-            display: "inline-block",
-            padding: "0.9em 1em",
-            backgroundColor: "#00a4dc",
-            color: "#fff",
-            border: "0",
-            textDecoration: "none",
-            borderRadius: "0.2em",
-            boxSizing: "border-box",
-            lineHeight: "1.35",
-            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-            transition: "background-color 0.3s ease",
-            cursor: "pointer",
-            marginTop: "1em"
-        },
-        children: "More Avatars"
-    })
-````
+    <span>${DeleteImage}</span> </button> <button is="emby-buttoon" type="button" class="raised" id="btnMoreImages">><STYLE>A {text-decoration: none; color: #def3fb} </STYLE><span>${<a href="/web/jellyfin-avatars-main/avatars.html" target="_blank">More Images</a>}</span></button>
 
-and save clear cache and reload in your client browser / app
+now you can just simply save this file 
 
-all done in 10.9.x
+one extra edit is needed to make this work (or you will get an api error)
 
+simply edit `index.html` and add find and replace `</body></html>` with 
 
-## future to-do
-include my scripts to build the avatar displays and explain usage so you can make and add your own and expand, maybe even customise things yourself to your own liking.
+```
+<script>
+// Function to save credentials to sessionStorage
+function saveCredentialsToSessionStorage(credentials) {
+  try {
+    // Store the credentials in sessionStorage
+    sessionStorage.setItem('json-credentials', JSON.stringify(credentials));
+    console.log('Credentials saved to sessionStorage.');
+  } catch (error) {
+    console.error('Error saving credentials:', error);
+  }
+}
+
+// Function to save the API key to sessionStorage
+function saveApiKey(apiKey) {
+  try {
+    sessionStorage.setItem('api-key', apiKey);
+    console.log('API key saved to sessionStorage.');
+  } catch (error) {
+    console.error('Error saving API key:', error);
+  }
+}
+
+// Override the default console.log function
+(function() {
+  var originalConsoleLog = console.log;
+
+  console.log = function(message) {
+    // Call the original console.log method
+    originalConsoleLog.apply(console, arguments);
+
+    // Check if the message contains the JSON credentials
+    if (typeof message === 'string' && message.startsWith('Stored JSON credentials:')) {
+      try {
+        // Extract the JSON credentials from the message
+        var jsonString = message.substring('Stored JSON credentials: '.length);
+        var credentials = JSON.parse(jsonString);
+
+        // Save the credentials to sessionStorage
+        saveCredentialsToSessionStorage(credentials);
+      } catch (error) {
+        console.error('Error parsing credentials:', error);
+      }
+    }
+
+    // Check if the message contains the WebSocket URL with api_key
+    if (typeof message === 'string' && message.startsWith('opening web socket with url:')) {
+      try {
+        // Extract the API key from the message
+        var url = message.split('url:')[1].trim();
+        var urlParams = new URL(url).searchParams;
+        var apiKey = urlParams.get('api_key');
+
+        if (apiKey) {
+          saveApiKey(apiKey);
+        }
+      } catch (error) {
+        console.error('Error extracting API key:', error);
+      }
+    }
+  };
+})();
+</script>
+</body></html>
+```
+
+now save the file and clear cache and reload in your client browser / app
+
+all set :D
