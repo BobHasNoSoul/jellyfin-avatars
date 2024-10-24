@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>PS2 Classic Avatars</title>
+<style>
+  body {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+  }
+  header img {
+    max-height: 100px;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+    grid-gap: 4px;
+    padding: 10px;
+  }
+  .gallery img {
+    max-width: 200px;
+    border: 1px solid #666;
+    display: block;
+    height: 200px;
+    overflow: hidden;
+    max-height: 200px;
+    object-fit: cover;
+}
+</style>
+<script>
+// Function to update the user image
+async function updateUserImage(imagePath) {
+  // Fetch credentials from sessionStorage
+  const jsonCredentials = sessionStorage.getItem('json-credentials');
+  const apiKey = sessionStorage.getItem('api-key'); // Get the API key from session storage
+
+  if (jsonCredentials && apiKey) {
+    const credentials = JSON.parse(jsonCredentials);
+    const userId = credentials.Servers[0].UserId;
+
+    // Check if the userId and apiKey are retrieved correctly
+    if (!userId) {
+      console.error('User ID not found in sessionStorage.');
+      alert('User ID not found. Please log in again.');
+      return;
+    }
+
+    if (!apiKey) {
+      console.error('API key not found in sessionStorage.');
+      alert('API key not found. Please log in again.');
+      return;
+    }
+
+    // Construct the URL for the API request
+    const apiUrl = `/Users/${userId}/Images/Primary`;
+
+    // Construct the image URL relative to the current page
+    const currentPageUrl = window.location.href; // Get the full URL of the current page
+    const baseUrl = currentPageUrl.substring(0, currentPageUrl.lastIndexOf('/') + 1); // Remove the filename from the URL
+    const imageUrl = baseUrl + imagePath; // Append the image path to the base URL
+
+    try {
+      // Fetch the image as a Blob
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image.');
+      }
+      const blob = await response.blob();
+
+      // Convert Blob to Base64
+      const base64String = await blobToBase64(blob);
+
+      // Determine the MIME type of the image from the blob
+      const contentType = blob.type;
+
+      // Send the POST request with the Base64-encoded image data
+      const uploadResponse = await fetch(apiUrl, {
+        method: 'POST',
+        credentials: 'include', // Ensure credentials are included
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.0',
+          'Accept': '*/*',
+          'Accept-Language': 'en-GB,en;q=0.5',
+          'Authorization': `MediaBrowser Client="Jellyfin Web", Device="Firefox", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6MTI5LjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvMTI5LjB8MTcyMzE5OTk0MTczOQ11", Version="10.9.7", Token="${apiKey}"`,
+          'Content-Type': contentType, // Set Content-Type to the MIME type of the image
+          'Sec-Fetch-Dest': 'empty',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'same-origin',
+          'Priority': 'u=4'
+        },
+        body: base64String, // Send only the Base64-encoded data
+        mode: 'cors' // Handle cross-origin requests
+      });
+
+      if (uploadResponse.ok) {
+        // Notify the user of success and ask if they want to go back
+        const userConfirmed = confirm('User image updated successfully! Do you want to go back to the home page?');
+        if (userConfirmed) {
+          // Redirect to the specified URL
+          window.location.href = '/web/#/home.html';
+        }
+      } else {
+        const errorData = await uploadResponse.json();
+        console.error('Server Error Details:', errorData); // Log the server error details
+        throw new Error(`Failed to update user image. Status: ${uploadResponse.status}, Details: ${errorData.detail}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while updating the user image.');
+    }
+  } else {
+    alert('User credentials not found or API key not found.');
+  }
+}
+
+// Helper function to convert Blob to Base64 string
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result.split(',')[1]); // Extract Base64 part
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+</script></head>
+<body>
+<header>
+<img alt="Logo" onclick="updateUserImage('logo.png')" src="logo.png" style="cursor: pointer;"/>
+</header>
+<h1>PS2 Classic Avatars</h1>
+<div class="gallery">
+<img alt="Image" loading="lazy" onclick="updateUserImage('010.gif')" src="010.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('11050.gif')" src="11050.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('21694.gif')" src="21694.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1013.gif')" src="A1013.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1097.gif')" src="A1097.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1181.gif')" src="A1181.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A257c.gif')" src="A257c.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A345e.gif')" src="A345e.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A429l.gif')" src="A429l.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A51.gif')" src="A51.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A597l.gif')" src="A597l.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A68.gif')" src="A68.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A765p.gif')" src="A765p.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A849r.gif')" src="A849r.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A93.gif')" src="A93.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1265.gif')" src="B1265.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1349.gif')" src="B1349.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1433.gif')" src="B1433.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B23.gif')" src="B23.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('013.gif')" src="013.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('11090.gif')" src="11090.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('217.gif')" src="217.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1017.gif')" src="A1017.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A11.gif')" src="A11.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1185.gif')" src="A1185.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A26.gif')" src="A26.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A349g.gif')" src="A349g.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A43.gif')" src="A43.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A517l.gif')" src="A517l.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A60.gif')" src="A60.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A685M.gif')" src="A685M.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A769p.gif')" src="A769p.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A85.gif')" src="A85.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A937r.gif')" src="A937r.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1269.gif')" src="B1269.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1353.gif')" src="B1353.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1437.gif')" src="B1437.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B24.gif')" src="B24.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('017.gif')" src="017.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('111.gif')" src="111.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('21775.gif')" src="21775.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1021.gif')" src="A1021.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1105.gif')" src="A1105.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A1189.gif')" src="A1189.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A265c.gif')" src="A265c.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A35.gif')" src="A35.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A437l.gif')" src="A437l.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A52.gif')" src="A52.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A605l.gif')" src="A605l.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A689M.gif')" src="A689M.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A77.gif')" src="A77.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A857r.gif')" src="A857r.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('A94.gif')" src="A94.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1273.gif')" src="B1273.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1357.gif')" src="B1357.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B1441.gif')" src="B1441.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('B25.gif')" src="B25.gif" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('021.gif')" src="021.gif" style="cursor: pointer;"/>
+<!-- INSERT_NEW_IMAGES_HERE -->
+</div></body></html>
