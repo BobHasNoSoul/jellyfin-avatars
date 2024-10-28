@@ -20,6 +20,8 @@ go to your web root (usually /usr/share/jellyfin/web) now run these commands
     sudo unzip main.zip
     sudo mv jellyfin-avatars-main/avatars ./avatars
 
+
+# 10.9.x version
 and now we need to edit the profile tab to enable the button :D 
 
     sudo nano user-userprofile.5*.js
@@ -41,6 +43,105 @@ now replace the entire files content with the following
                 btnDeleteImage.parentNode.insertBefore(btnMoreAvatars, btnDeleteImage.nextSibling);
             }
         } else console.error("[userprofile] Unexpected null page reference")}),[b,e]),(0,a.jsx)(p.A,{id:"userProfilePage",title:s.Ay.translate("Profile"),className:"mainAnimatedPage libraryPage userPreferencesPage userPasswordPage noSecondaryNavPage",children:(0,a.jsxs)("div",{ref:A,className:"padded-left padded-right padded-bottom-page",children:[(0,a.jsxs)("div",{className:"readOnlyContent",style:{margin:"0 auto",marginBottom:"1.8em",padding:"0 1em",display:"flex",flexDirection:"row",alignItems:"center"},children:[(0,a.jsxs)("div",{className:"imagePlaceHolder",style:{position:"relative",display:"inline-block",maxWidth:200},children:[(0,a.jsx)("input",{id:"uploadImage",type:"file",accept:"image/*",style:{position:"absolute",right:0,width:"100%",height:"100%",opacity:0,cursor:"pointer"}}),(0,a.jsx)("div",{id:"image",style:{width:200,height:200,backgroundRepeat:"no-repeat",backgroundPosition:"center",borderRadius:"100%",backgroundSize:"cover"}})]}),(0,a.jsxs)("div",{style:{verticalAlign:"top",margin:"1em 2em",display:"flex",flexDirection:"column",alignItems:"center"},children:[(0,a.jsx)("h2",{className:"username",style:{margin:0,fontSize:"xx-large"},children:t}),(0,a.jsx)("br",{}),(0,a.jsx)(g.A,{type:"button",id:"btnAddImage",className:"raised emby-button hide",title:"ButtonAddImage"}),(0,a.jsx)(g.A,{type:"button",id:"btnDeleteImage",className:"raised emby-button hide",title:"DeleteImage"})]})]}),(0,a.jsx)(m.A,{userId:e})]})})}}}]);
+
+now you can just simply save this file 
+
+one extra edit is needed to make this work (or you will get an api error)
+
+simply edit `index.html` and add find and replace `</body></html>` with 
+
+```
+<script>
+// Function to save credentials to sessionStorage
+function saveCredentialsToSessionStorage(credentials) {
+  try {
+    // Store the credentials in sessionStorage
+    sessionStorage.setItem('json-credentials', JSON.stringify(credentials));
+    console.log('Credentials saved to sessionStorage.');
+  } catch (error) {
+    console.error('Error saving credentials:', error);
+  }
+}
+
+// Function to save the API key to sessionStorage
+function saveApiKey(apiKey) {
+  try {
+    sessionStorage.setItem('api-key', apiKey);
+    console.log('API key saved to sessionStorage.');
+  } catch (error) {
+    console.error('Error saving API key:', error);
+  }
+}
+
+// Override the default console.log function
+(function() {
+  var originalConsoleLog = console.log;
+
+  console.log = function(message) {
+    // Call the original console.log method
+    originalConsoleLog.apply(console, arguments);
+
+    // Check if the message contains the JSON credentials
+    if (typeof message === 'string' && message.startsWith('Stored JSON credentials:')) {
+      try {
+        // Extract the JSON credentials from the message
+        var jsonString = message.substring('Stored JSON credentials: '.length);
+        var credentials = JSON.parse(jsonString);
+
+        // Save the credentials to sessionStorage
+        saveCredentialsToSessionStorage(credentials);
+      } catch (error) {
+        console.error('Error parsing credentials:', error);
+      }
+    }
+
+    // Check if the message contains the WebSocket URL with api_key
+    if (typeof message === 'string' && message.startsWith('opening web socket with url:')) {
+      try {
+        // Extract the API key from the message
+        var url = message.split('url:')[1].trim();
+        var urlParams = new URL(url).searchParams;
+        var apiKey = urlParams.get('api_key');
+
+        if (apiKey) {
+          saveApiKey(apiKey);
+        }
+      } catch (error) {
+        console.error('Error extracting API key:', error);
+      }
+    }
+  };
+})();
+</script>
+</body></html>
+```
+
+now save the file and clear cache and reload in your client browser / app
+
+all set :D
+
+
+# 10.10.x version
+
+for 10.10.x
+
+`sudo nano user-userprofile.9cdbcbd8b4ed7a184e73.chunk.js`
+
+find `className:"raised hide",title:"DeleteImage"})`
+
+replace it with 
+
+```
+
+className:"raised hide",title:"DeleteImage"}),
+(0, n.jsx)("a", {
+    href: "/web/avatars/index.html",
+    className: "raised button-submit",
+    style: { marginTop: "1em", display: "inline-block", textDecoration: "none", padding: "0.5em 1em", backgroundColor: "#007BFF", color: "#fff", borderRadius: "5px", textAlign: "center" },
+    children: "More Avatars"
+})
+
+```
 
 now you can just simply save this file 
 
