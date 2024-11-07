@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Paramount+</title>
+<style>
+  body {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+  }
+  header img {
+    max-height: 100px;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+    grid-gap: 4px;
+    padding: 10px;
+  }
+  .gallery img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #666;
+  }
+</style>
+<script>
+// Function to update the user image
+async function updateUserImage(imagePath) {
+  // Fetch credentials from sessionStorage
+  const jsonCredentials = sessionStorage.getItem('json-credentials');
+  const apiKey = sessionStorage.getItem('api-key'); // Get the API key from session storage
+
+  if (jsonCredentials && apiKey) {
+    const credentials = JSON.parse(jsonCredentials);
+    const userId = credentials.Servers[0].UserId;
+
+    // Check if the userId and apiKey are retrieved correctly
+    if (!userId) {
+      console.error('User ID not found in sessionStorage.');
+      alert('User ID not found. Please log in again.');
+      return;
+    }
+
+    if (!apiKey) {
+      console.error('API key not found in sessionStorage.');
+      alert('API key not found. Please log in again.');
+      return;
+    }
+
+    // Construct the URL for the API request
+    const apiUrl = `/Users/${userId}/Images/Primary`;
+
+    // Construct the image URL relative to the current page
+    const currentPageUrl = window.location.href; // Get the full URL of the current page
+    const baseUrl = currentPageUrl.substring(0, currentPageUrl.lastIndexOf('/') + 1); // Remove the filename from the URL
+    const imageUrl = baseUrl + imagePath; // Append the image path to the base URL
+
+    try {
+      // Fetch the image as a Blob
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch image.');
+      }
+      const blob = await response.blob();
+
+      // Convert Blob to Base64
+      const base64String = await blobToBase64(blob);
+
+      // Determine the MIME type of the image from the blob
+      const contentType = blob.type;
+
+      // Send the POST request with the Base64-encoded image data
+      const uploadResponse = await fetch(apiUrl, {
+        method: 'POST',
+        credentials: 'include', // Ensure credentials are included
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.0',
+          'Accept': '*/*',
+          'Accept-Language': 'en-GB,en;q=0.5',
+          'Authorization': `MediaBrowser Client="Jellyfin Web", Device="Firefox", DeviceId="TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NDsgcnY6MTI5LjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvMTI5LjB8MTcyMzE5OTk0MTczOQ11", Version="10.9.7", Token="${apiKey}"`,
+          'Content-Type': contentType, // Set Content-Type to the MIME type of the image
+          'Sec-Fetch-Dest': 'empty',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'same-origin',
+          'Priority': 'u=4'
+        },
+        body: base64String, // Send only the Base64-encoded data
+        mode: 'cors' // Handle cross-origin requests
+      });
+
+      if (uploadResponse.ok) {
+        // Notify the user of success and ask if they want to go back
+        const userConfirmed = confirm('User image updated successfully! Do you want to go back to the home page?');
+        if (userConfirmed) {
+          // Redirect to the specified URL
+          window.location.href = '/web/#/home.html';
+        }
+      } else {
+        const errorData = await uploadResponse.json();
+        console.error('Server Error Details:', errorData); // Log the server error details
+        throw new Error(`Failed to update user image. Status: ${uploadResponse.status}, Details: ${errorData.detail}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while updating the user image.');
+    }
+  } else {
+    alert('User credentials not found or API key not found.');
+  }
+}
+
+// Helper function to convert Blob to Base64 string
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result.split(',')[1]); // Extract Base64 part
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+</script></head>
+<body>
+<header>
+<img alt="Logo" onclick="updateUserImage('logo.svg')" src="logo.svg" style="cursor: pointer;"/>
+</header>
+<h1>Paramount+</h1>
+<div class="gallery">
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_1_sheabrennan_0.png')" src="avatar_1883_1_sheabrennan_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_2_jamesdutton_0.png')" src="avatar_1883_2_jamesdutton_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_3_margaretdutton_0.png')" src="avatar_1883_3_margaretdutton_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_4_elsadutton_0.png')" src="avatar_1883_4_elsadutton_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_5_marshaljimcourtright_0.png')" src="avatar_1883_5_marshaljimcourtright_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_6_thomas_0.png')" src="avatar_1883_6_thomas_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_7_josef_0.png')" src="avatar_1883_7_josef_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_8_ennis_0.png')" src="avatar_1883_8_ennis_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_1883_9_wade_0.png')" src="avatar_1883_9_wade_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_bignate_1_nate_0.png')" src="avatar_bignate_1_nate_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_bignate_2_francis_0.png')" src="avatar_bignate_2_francis_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_bignate_3_teddy_0.png')" src="avatar_bignate_3_teddy_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_bignate_4_deedee_0.png')" src="avatar_bignate_4_deedee_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_bignate_5_ellen_0.png')" src="avatar_bignate_5_ellen_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-10-daevisha_7.png')" src="avatar-billions-10-daevisha_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-1-chuck_7.png')" src="avatar-billions-1-chuck_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-2-bobby_7.png')" src="avatar-billions-2-bobby_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-3-wendy_7.png')" src="avatar-billions-3-wendy_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-5-kate_7.png')" src="avatar-billions-5-kate_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-6-wags_7.png')" src="avatar-billions-6-wags_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-7-taylor_7.png')" src="avatar-billions-7-taylor_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-8-chuck-sr_7.png')" src="avatar-billions-8-chuck-sr_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-billions-9-roger_7.png')" src="avatar-billions-9-roger_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_evil_1_kristenbouchard_0.png')" src="avatar_evil_1_kristenbouchard_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_evil_2_davidacosta_0.png')" src="avatar_evil_2_davidacosta_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_evil_3_benshakir_0.png')" src="avatar_evil_3_benshakir_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_evil_4_lelandtownsend_0.png')" src="avatar_evil_4_lelandtownsend_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_evil_5_sherylluria_0.png')" src="avatar_evil_5_sherylluria_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_evil_6_sisterandrea_0.png')" src="avatar_evil_6_sisterandrea_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_evil_7_drboggs_0.png')" src="avatar_evil_7_drboggs_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-frasier-1-frasier0.75x.png')" src="avatar-frasier-1-frasier0.75x.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-frasier-2-freddy0.75x_1.png')" src="avatar-frasier-2-freddy0.75x_1.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-frasier-3-alan0.75x.png')" src="avatar-frasier-3-alan0.75x.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-frasier-4-olivia0.75x_1.png')" src="avatar-frasier-4-olivia0.75x_1.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-frasier-5-eve0.75x_1.png')" src="avatar-frasier-5-eve0.75x_1.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-frasier-6-david0.75x_1.png')" src="avatar-frasier-6-david0.75x_1.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_1_mastercheif_0.png')" src="avatar_halo_1_mastercheif_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_2_kai_0.png')" src="avatar_halo_2_kai_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_3_vannak_0.png')" src="avatar_halo_3_vannak_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_4_riz_0.png')" src="avatar_halo_4_riz_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_5_cortana_0.png')" src="avatar_halo_5_cortana_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_6_kwan_0.png')" src="avatar_halo_6_kwan_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_7_drhalsey_0.png')" src="avatar_halo_7_drhalsey_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_8_soren_1.png')" src="avatar_halo_8_soren_1.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_halo_9_makee_0.png')" src="avatar_halo_9_makee_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_icarly_1_carly_0.png')" src="avatar_icarly_1_carly_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_icarly_2_spencer_0.png')" src="avatar_icarly_2_spencer_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_icarly_3_millicent_0.png')" src="avatar_icarly_3_millicent_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_icarly_4_harper_0.png')" src="avatar_icarly_4_harper_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_icarly_5_freddie_0.png')" src="avatar_icarly_5_freddie_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-lbr-1-bass-reeves-0.75x.png')" src="avatar-lbr-1-bass-reeves-0.75x.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-lbr-2-jennie-0.75x_0.png')" src="avatar-lbr-2-jennie-0.75x_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-lbr-3-billy-crow-0.75x_0.png')" src="avatar-lbr-3-billy-crow-0.75x_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-lbr-4-sherill-lynn-0.75x_0.png')" src="avatar-lbr-4-sherill-lynn-0.75x_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-lbr-5-judge-parker-0.75x_0.png')" src="avatar-lbr-5-judge-parker-0.75x_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-lbr-6-esau-pierce-0.75x_0.png')" src="avatar-lbr-6-esau-pierce-0.75x_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_1_mike_mclusky_0.png')" src="avatar_mok_1_mike_mclusky_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_2_miriam_mclusky_0.png')" src="avatar_mok_2_miriam_mclusky_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_3_milo_sunter_0.png')" src="avatar_mok_3_milo_sunter_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_4_ian_ferguson_0.png')" src="avatar_mok_4_ian_ferguson_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_5_kyle_mclusky_0.png')" src="avatar_mok_5_kyle_mclusky_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_6_stevie_0.png')" src="avatar_mok_6_stevie_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_7_iris_0.png')" src="avatar_mok_7_iris_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_8_pdog_0.png')" src="avatar_mok_8_pdog_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_mok_9_robert_0.png')" src="avatar_mok_9_robert_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_10_tracker_0.png')" src="avatar_paw_10_tracker_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_1_chase_0.png')" src="avatar_paw_1_chase_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_2_skye_0.png')" src="avatar_paw_2_skye_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_3_liberty_0.png')" src="avatar_paw_3_liberty_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_4_ryder_0.png')" src="avatar_paw_4_ryder_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_5_marshall_0.png')" src="avatar_paw_5_marshall_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_6_rubble_0.png')" src="avatar_paw_6_rubble_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_7_rocky_0.png')" src="avatar_paw_7_rocky_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_paw_9_everest_0.png')" src="avatar_paw_9_everest_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-1-spongebob_0.png')" src="avatar-sb25-carousel-1a-1-spongebob_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-2-patrick.png')" src="avatar-sb25-carousel-1a-2-patrick.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-3-squidward.png')" src="avatar-sb25-carousel-1a-3-squidward.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-4-mr.-krabs.png')" src="avatar-sb25-carousel-1a-4-mr.-krabs.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-5-sandy.png')" src="avatar-sb25-carousel-1a-5-sandy.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-6-gary.png')" src="avatar-sb25-carousel-1a-6-gary.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-7-plankton.png')" src="avatar-sb25-carousel-1a-7-plankton.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1a-8-pearl.png')" src="avatar-sb25-carousel-1a-8-pearl.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-10-barnacle-boy.png')" src="avatar-sb25-carousel-1b-10-barnacle-boy.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-11-larry-the-lobster.png')" src="avatar-sb25-carousel-1b-11-larry-the-lobster.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-12-doodlebob.png')" src="avatar-sb25-carousel-1b-12-doodlebob.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-13-squilliam.png')" src="avatar-sb25-carousel-1b-13-squilliam.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-14-baby-prunes.png')" src="avatar-sb25-carousel-1b-14-baby-prunes.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-15-baby-patrick.png')" src="avatar-sb25-carousel-1b-15-baby-patrick.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-16-fred.png')" src="avatar-sb25-carousel-1b-16-fred.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-17-karen.png')" src="avatar-sb25-carousel-1b-17-karen.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-sb25-carousel-1b-9-mermaid-man.png')" src="avatar-sb25-carousel-1b-9-mermaid-man.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sonicthehedgehog_1_sonic_0.png')" src="avatar_sonicthehedgehog_1_sonic_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sonicthehedgehog_2_knuckles_0.png')" src="avatar_sonicthehedgehog_2_knuckles_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sonicthehedgehog_3_tails_0.png')" src="avatar_sonicthehedgehog_3_tails_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_1_eric_cartman.png')" src="avatar_sp_1_eric_cartman.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_2_kenny_mccormick_0.png')" src="avatar_sp_2_kenny_mccormick_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_3_stan_marsh_0.png')" src="avatar_sp_3_stan_marsh_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_4_kyle_broflovski_0.png')" src="avatar_sp_4_kyle_broflovski_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_5_butters_0.png')" src="avatar_sp_5_butters_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_6_mr._garrison_0.png')" src="avatar_sp_6_mr._garrison_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_7_randy_marsh_0.png')" src="avatar_sp_7_randy_marsh_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_8_sharon_marsh_0.png')" src="avatar_sp_8_sharon_marsh_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_sp_9_gerald_broflovski_0.png')" src="avatar_sp_9_gerald_broflovski_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-spol-1-joe_7.png')" src="avatar-spol-1-joe_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-spol-2-cruz_7.png')" src="avatar-spol-2-cruz_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-spol-3-westfield.png')" src="avatar-spol-3-westfield.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-spol-4-mullins_7.png')" src="avatar-spol-4-mullins_7.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-spol-5-kaitlin_6.png')" src="avatar-spol-5-kaitlin_6.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_1_burnham_0.png')" src="avatar_stdisco_1_burnham_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_2_saru_0.png')" src="avatar_stdisco_2_saru_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_3_tilly_0.png')" src="avatar_stdisco_3_tilly_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_4_staments_0.png')" src="avatar_stdisco_4_staments_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_5_culber_0.png')" src="avatar_stdisco_5_culber_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_6_adira_0.png')" src="avatar_stdisco_6_adira_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_7_booker_0.png')" src="avatar_stdisco_7_booker_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar_stdisco_8_grudge_0.png')" src="avatar_stdisco_8_grudge_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-1-pike_0.png')" src="avatar-st-snw-1-pike_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-2-una_0.png')" src="avatar-st-snw-2-una_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-3-spock_0.png')" src="avatar-st-snw-3-spock_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-4-uhura_0.png')" src="avatar-st-snw-4-uhura_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-5-chapel_0.png')" src="avatar-st-snw-5-chapel_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-6-m_benga_0.png')" src="avatar-st-snw-6-m_benga_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-7-ortegas_0.png')" src="avatar-st-snw-7-ortegas_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-8-noonien-singh_0.png')" src="avatar-st-snw-8-noonien-singh_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('avatar-st-snw-9-hemmer_0.png')" src="avatar-st-snw-9-hemmer_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('emotions_lol_0.png')" src="emotions_lol_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('emotions_popcorn_0.png')" src="emotions_popcorn_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('emotions_scared_0.png')" src="emotions_scared_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('GIANT_CYCLOPS_0.png')" src="GIANT_CYCLOPS_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('nick_avatar_0.png')" src="nick_avatar_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('nick_blaze_0.png')" src="nick_blaze_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('nick_chase_0.png')" src="nick_chase_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('nick_dora_0.png')" src="nick_dora_0.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('nick_korra.png')" src="nick_korra.png" style="cursor: pointer;"/>
+<img alt="Image" loading="lazy" onclick="updateUserImage('nick_peppa_3.png')" src="nick_peppa_3.png" style="cursor: pointer;"/>
+</div></body>
+</html>

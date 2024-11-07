@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Avatar Selection</title>
+<style>
+  body {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+  }
+  header img {
+    max-height: 100px;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+    grid-gap: 4px;
+    padding: 10px;
+  }
+  .gallery img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #666;
+    cursor: pointer; /* Show a pointer when hovering over images */
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo">
+</header>
+<h1>Select Avatar</h1>
+<div class="gallery">
+  <img src="1.png" alt="Image 1" loading="lazy" data-image-url="1.png">
+  <img src="10.png" alt="Image 10" loading="lazy" data-image-url="10.png">
+  <img src="11.png" alt="Image 11" loading="lazy" data-image-url="11.png">
+  <img src="12.png" alt="Image 12" loading="lazy" data-image-url="12.png">
+  <!-- Add more images as needed -->
+</div>
+
+<script>
+// Retrieve stored JSON credentials
+function getStoredCredentials() {
+  const credentials = localStorage.getItem('json-credentials'); // Adjust the key as needed
+  return credentials ? JSON.parse(credentials) : null;
+}
+
+// Extract User ID and Access Token
+function getUserIdAndToken() {
+  const credentials = getStoredCredentials();
+  if (credentials && credentials.Servers && credentials.Servers.length > 0) {
+    const server = credentials.Servers[0];
+    return {
+      userId: server.UserId,
+      accessToken: server.AccessToken
+    };
+  } else {
+    console.error('Credentials not found or invalid.');
+    return null;
+  }
+}
+
+// Function to create a blob from an image URL
+function urlToBlob(url) {
+  return fetch(url)
+    .then(response => response.blob())
+    .catch(err => {
+      console.error('Error converting URL to Blob:', err);
+      throw err;
+    });
+}
+
+// Update profile picture
+function updateProfilePicture(imageUrl) {
+  const { userId, accessToken } = getUserIdAndToken();
+
+  if (!userId || !accessToken) {
+    alert('Unable to retrieve user information.');
+    return;
+  }
+
+  urlToBlob(imageUrl).then(blob => {
+    const formData = new FormData();
+    formData.append('image', blob, 'profile-picture.png'); // Name the file appropriately
+
+    fetch(`https://www6.blueboxofdoom.uk/Users/${userId}/Images/Primary`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`, // Use Authorization header with Bearer token
+      },
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Profile picture updated successfully!');
+      } else {
+        throw new Error('Failed to update profile picture');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while updating the profile picture.');
+    });
+  });
+}
+
+// Event listener for avatar selection
+document.querySelectorAll('.gallery img').forEach(img => {
+  img.addEventListener('click', function() {
+    const imageUrl = this.getAttribute('data-image-url');
+    updateProfilePicture(imageUrl);
+  });
+});
+</script>
+
+</body>
+</html>

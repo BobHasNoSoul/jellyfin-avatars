@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Xbox 360</title>
+<style>
+  body {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+  }
+  header img {
+    max-height: 100px;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+    grid-gap: 4px;
+    padding: 10px;
+  }
+  .gallery img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #666;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="logo.png" alt="Logo">
+</header>
+<h1>Xbox 360</h1>
+<div class="gallery">
+<a href="1.png" download><img src="1.png" alt="Image" loading="lazy"></a>
+<a href="10.png" download><img src="10.png" alt="Image" loading="lazy"></a>
+<a href="11.png" download><img src="11.png" alt="Image" loading="lazy"></a>
+<a href="12.png" download><img src="12.png" alt="Image" loading="lazy"></a>
+<a href="2.png" download><img src="2.png" alt="Image" loading="lazy"></a>
+<a href="3.png" download><img src="3.png" alt="Image" loading="lazy"></a>
+<a href="4.png" download><img src="4.png" alt="Image" loading="lazy"></a>
+<a href="5.png" download><img src="5.png" alt="Image" loading="lazy"></a>
+<a href="6.png" download><img src="6.png" alt="Image" loading="lazy"></a>
+<a href="7.png" download><img src="7.png" alt="Image" loading="lazy"></a>
+<a href="8.png" download><img src="8.png" alt="Image" loading="lazy"></a>
+<a href="9.png" download><img src="9.png" alt="Image" loading="lazy"></a>
+</div></body></html>
