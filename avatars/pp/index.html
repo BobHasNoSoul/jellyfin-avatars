@@ -4,32 +4,44 @@
 <head>
 <title>Paramount+</title>
 <style>
-  body {
+html, body {
+    height: 100vh;
+    overflow-y: scroll !important; /* Always display scrollbar explicitly */
+    margin: 0;
+    padding: 0;
+}
+
+body {
     background-color: #1a1a1a;
     color: #f0f0f0;
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  header {
+}
+
+header {
     background-color: #333;
     padding: 10px;
     text-align: center;
-  }
-  header img {
-    max-height: 100px;
-  }
-  .gallery {
+    position: relative; /* header stays fixed at the top */
+    top: 0;
+    z-index: 100;
+}
+
+.gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
     grid-gap: 4px;
     padding: 10px;
-  }
-  .gallery img {
-    max-width: 100%;
-    height: auto;
+    overflow: visible !important; /* explicitly allow content to overflow */
+}
+
+.gallery img {
+    max-width: 200px;
     border: 1px solid #666;
-  }
+    display: block;
+    height: 200px;
+    object-fit: cover;
+}
+
 </style>
 <script>
 // Function to update the user image
