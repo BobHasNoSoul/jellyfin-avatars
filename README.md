@@ -125,6 +125,45 @@ all set :D
 
 for 10.10.x
 
+insert the following into the index.html on the main jellyfin webroot (not inside the avatars folder)
+
+````
+<script>
+// Function to extract the userId from the URL
+function getUserIdFromURL() {
+  const url = window.location.href;
+  const userIdMatch = url.match(/userId=([^&]+)/);
+  return userIdMatch ? userIdMatch[1] : null;
+}
+
+// Function to check and store the userId
+function monitorAndStoreUserId() {
+  const userId = getUserIdFromURL();
+  if (userId) {
+    sessionStorage.setItem('lsuserid', userId);
+    console.log('Stored userId in sessionStorage:', userId);
+  }
+}
+
+// Check immediately when the script loads
+monitorAndStoreUserId();
+
+// Also set up a MutationObserver to check for URL changes (like in SPA navigation)
+const observer = new MutationObserver(function(mutations) {
+  monitorAndStoreUserId();
+});
+
+// Start observing the body for changes that might indicate a URL change
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+// Alternatively, you could listen for hashchange or popstate events
+window.addEventListener('hashchange', monitorAndStoreUserId);
+window.addEventListener('popstate', monitorAndStoreUserId);</script>
+````
+
 `sudo nano user-userprofile.9cdbcbd8b4ed7a184e73.chunk.js`
 
 find `className:"raised hide",title:"DeleteImage"})`
@@ -216,5 +255,8 @@ function saveApiKey(apiKey) {
 ```
 
 now save the file and clear cache and reload in your client browser / app
+
+
+this now allows admins to set users profiles in the admin side without having to mess around because it changes how it stores the target user id 
 
 all set :D
