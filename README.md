@@ -17,15 +17,17 @@ docker official jellyfin image - `/jellyfin/jellyfin-web`
 
 now you need to `copy the avatars folder into the webroot` 
 
-now in your webroot `edit index.html` find `</body>` and just add the following `<script defer src="monitoruserid.js"></script>` and save and close it 
+now in your webroot `edit index.html` find `</body>` and just add the following ```<script defer src="monitoruserid.js"></script>``` and save and close it 
 
 now we edit `user-userprofile.9cdbcbd8b4ed7a184e73.chunk.js` your uuid could be different here but the process is the same 
 
-find `className:"raised hide",title:"DeleteImage"}),`
+find ```className:"raised hide",title:"DeleteImage"}),```
 
 replace it with 
 
-`className:"raised hide",title:"DeleteImage"}), (0, n.jsx)("a", {    href: "/web/avatars/index.html",    className: "raised button-submit",    style: { marginTop:"1em", display: "inline-block", textDecoration: "none", padding: "0.5em 1em", backgroundColor: "#007BFF", color:"#fff", borderRadius: "5px", textAlign: "center" },    children: "More Avatars"})]})]}),`
+```
+className:"raised hide",title:"DeleteImage"}), (0, n.jsx)("a", {    href: "/web/avatars/index.html",    className: "raised button-submit",    style: { marginTop:"1em", display: "inline-block", textDecoration: "none", padding: "0.5em 1em", backgroundColor: "#007BFF", color:"#fff", borderRadius: "5px", textAlign: "center" },    children: "More Avatars"})]})]}),
+```
 
 now save and close it
 
