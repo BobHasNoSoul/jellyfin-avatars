@@ -45,7 +45,8 @@
     margin-bottom: 20px;
   }
 </style>
-</head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/MakD/Jellyfin-Media-Bar@latest/slideshowpure.css" />
+<script defer src="https://cdn.jsdelivr.net/gh/MakD/Jellyfin-Media-Bar@latest/slideshowpure.js"></script><link rel="stylesheet" href="/HomeScreen/home-screen-sections.css" /></head>
 <body>
 <header>
   <h1>Avatar Library</h1>
@@ -96,5 +97,38 @@
 " alt="Disney+ Avatars
 " style="max-width: 250px;"></a>
 </div>
-</body>
+<script plugin="PluginPages" version="1.0.0.0" src="/PluginPages/inject.js" defer></script><script type="text/javascript" plugin="Jellyfin.Plugin.HomeScreenSections" src="/HomeScreen/home-screen-sections.js" defer></script></body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create back button element
+    const backButton = document.createElement('button');
+    backButton.textContent = '← Back';
+    backButton.style.position = 'fixed';
+    backButton.style.top = '10px';
+    backButton.style.left = '10px';
+    backButton.style.padding = '8px 12px';
+    backButton.style.backgroundColor = '#333';
+    backButton.style.color = 'white';
+    backButton.style.border = 'none';
+    backButton.style.borderRadius = '4px';
+    backButton.style.cursor = 'pointer';
+    backButton.style.zIndex = '1000';
+    
+    // Add hover effect
+    backButton.addEventListener('mouseover', function() {
+        backButton.style.backgroundColor = '#555';
+    });
+    backButton.addEventListener('mouseout', function() {
+        backButton.style.backgroundColor = '#333';
+    });
+    
+    // Add click event to go back
+    backButton.addEventListener('click', function() {
+        window.history.back();
+    });
+    
+    // Append button to body
+    document.body.appendChild(backButton);
+});
+</script>
